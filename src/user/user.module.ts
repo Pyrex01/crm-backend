@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserController } from './user.controller';
-import { PrismaModule } from 'src/prisma/prisma.module';
-import { ConfigModule } from '@nestjs/config';
 import { JwtAuthModule } from 'src/jwt-auth/jwt-auth.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UserSchema } from 'src/Schemas/User.schema';
 
 @Module({
-  imports: [PrismaModule, ConfigModule, JwtAuthModule],
+  imports: [
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    JwtAuthModule,
+  ],
   providers: [UserService],
   controllers: [UserController],
 })

@@ -16,9 +16,10 @@ export class CustomerService {
   async getCustomers(customerPageDTO: CustomerPageDTO) {
     const skip = (customerPageDTO.pageNo - 1) * customerPageDTO.pageSize;
     return await this.customerModel
-      .find()
+      .find({ isDeleted: false })
       .limit(customerPageDTO.pageSize)
-      .skip(skip);
+      .skip(skip)
+      .select(['firstName', 'lastName', 'email', 'score', 'image']);
   }
 
   async getCustomer(id: string) {

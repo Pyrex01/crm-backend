@@ -1,12 +1,19 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
 import { CreateCustomerDTO } from './DTO/create-customer.dto';
 import { UpdateCustomerDTO } from './DTO/update-customer.dto';
+import { CustomerPageDTO } from './DTO/page-customer.dto';
 
 @Controller('customer')
 export class CustomerController {
   constructor(private customerService: CustomerService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/page')
+  async getCustomers(@Query() customerPageDTO: CustomerPageDTO ) {
+    return await this.customerService.getCustomers(customerPageDTO);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Post('create')

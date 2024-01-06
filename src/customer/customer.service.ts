@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose';
 import { Customer } from 'src/Schemas/Customer.schema';
 import { CreateCustomerDTO } from './DTO/create-customer.dto';
 import { UpdateCustomerDTO } from './DTO/update-customer.dto';
+import { CustomerPageDTO } from './DTO/page-customer.dto';
 
 @Injectable()
 export class CustomerService {
@@ -12,9 +13,18 @@ export class CustomerService {
     private customerModel: mongoose.Model<Customer>,
   ) {}
 
+  async getCustomers(customerPageDTO: CustomerPageDTO) {
+    const skip = (customerPageDTO.pageNo - 1) * customerPageDTO.pageSize;
+    return await this.customerModel
+      .find()
+      .limit(customerPageDTO.pageSize)
+      .skip(skip);
+  }
+
   async getCustomer(id: string) {
     return await this.customerModel.findById(id);
   }
+
   async createCustomer(createCustomerDto: CreateCustomerDTO) {
     try {
       return (await this.customerModel.create(createCustomerDto)).save();

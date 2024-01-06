@@ -17,8 +17,14 @@ export class JwtAuthGuard implements CanActivate {
     if (bearer != 'bearer') {
       return false;
     }
+    const { headers } = context.switchToHttp().getRequest();
+
     const userPayload = this.jwtAuthService.verifyJwt(token);
     if (userPayload) {
+      headers.id = userPayload.id;
+      headers.name = userPayload.name;
+      headers.username = userPayload.username;
+
       return true;
     }
     return false;

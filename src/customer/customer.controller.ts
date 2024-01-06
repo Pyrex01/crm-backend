@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
 import { CreateCustomerDTO } from './DTO/create-customer.dto';
@@ -18,5 +18,11 @@ export class CustomerController {
   @Post('update')
   async updateCustomer(@Body() updateCustomerDTO: UpdateCustomerDTO) {
     return await this.customerService.updateCustomer(updateCustomerDTO);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async getCustomer(@Param('id') id: string) {
+    return await this.customerService.getCustomer(id);
   }
 }

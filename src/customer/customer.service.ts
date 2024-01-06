@@ -12,6 +12,9 @@ export class CustomerService {
     private customerModel: mongoose.Model<Customer>,
   ) {}
 
+  async getCustomer(id: string) {
+    return await this.customerModel.findById(id);
+  }
   async createCustomer(createCustomerDto: CreateCustomerDTO) {
     try {
       return (await this.customerModel.create(createCustomerDto)).save();

@@ -11,8 +11,30 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
   name     String
   username String @unique
   password String
+}
+
+model Customer {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  score       Int
+  image       String?
+  address     String?
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  email       String   @unique
+  phone       String?
+  birthDate    DateTime?
+  status      CustomerStatus
+  notes       String?  
+}
+
+enum CustomerStatus {
+  Active
+  Inactive
+  Pending
 }

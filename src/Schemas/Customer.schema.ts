@@ -32,6 +32,16 @@ export class Customer extends Document {
 
   @Prop({ default: Date.now() })
   updatedAt: Date;
+
+  @Prop({ default: false })
+  isDeleted: boolean;
 }
 
 export const CustomerSchema = SchemaFactory.createForClass(Customer);
+CustomerSchema.set('toJSON', {
+  virtuals: true,
+  versionKey: false,
+  transform: function (doc, ret) {
+    delete ret._id;
+  },
+});

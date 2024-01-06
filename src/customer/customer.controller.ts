@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { JwtAuthGuard } from 'src/jwt-auth/jwt-auth.guard';
 import { CreateCustomerDTO } from './DTO/create-customer.dto';
@@ -11,7 +20,7 @@ export class CustomerController {
 
   @UseGuards(JwtAuthGuard)
   @Get('/page')
-  async getCustomers(@Query() customerPageDTO: CustomerPageDTO ) {
+  async getCustomers(@Query() customerPageDTO: CustomerPageDTO) {
     return await this.customerService.getCustomers(customerPageDTO);
   }
 
@@ -31,5 +40,11 @@ export class CustomerController {
   @Get(':id')
   async getCustomer(@Param('id') id: string) {
     return await this.customerService.getCustomer(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id')
+  async deleteCustomer(@Param('id') id: string) {
+    return await this.customerService.deleteCustomer(id);
   }
 }

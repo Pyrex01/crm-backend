@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
 import { Customer } from 'src/Schemas/Customer.schema';
@@ -13,6 +17,15 @@ export class CustomerService {
     private customerModel: mongoose.Model<Customer>,
   ) {}
 
+  async deleteCustomer(id: string) {
+    const result = await this.customerModel.findById(id);
+    if (!result.isDeleted) {
+      await result.updateOne({ isDeleted: true });
+      return { message: 'deletion success!' };
+    }
+    throw new BadRequestException("Customer doesn't exist!");
+  }
+
   async getCustomers(customerPageDTO: CustomerPageDTO) {
     const skip = (customerPageDTO.pageNo - 1) * customerPageDTO.pageSize;
     return await this.customerModel
@@ -23,7 +36,14 @@ export class CustomerService {
   }
 
   async getCustomer(id: string) {
-    return await this.customerModel.findById(id);
+    const result = await this.customerModel.findOne({
+      id: id,
+      isDeleted: false,
+    });
+    if (!result) {
+      throw new NotFoundException("Customer doesn't exist!");
+    }
+    return result;
   }
 
   async createCustomer(createCustomerDto: CreateCustomerDTO) {
@@ -40,8 +60,6 @@ export class CustomerService {
   async updateCustomer(updateCustomerDTO: UpdateCustomerDTO) {
     const id = updateCustomerDTO.id;
     delete updateCustomerDTO.id;
-    console.log(id);
-    console.log(updateCustomerDTO);
     return await this.customerModel.findByIdAndUpdate(id, updateCustomerDTO, {
       returnDocument: 'after',
     });

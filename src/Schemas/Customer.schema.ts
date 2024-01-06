@@ -43,5 +43,6 @@ CustomerSchema.set('toJSON', {
   versionKey: false,
   transform: function (doc, ret) {
     delete ret._id;
+    delete ret.isDeleted;
   },
 });

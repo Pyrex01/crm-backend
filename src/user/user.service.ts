@@ -6,7 +6,6 @@ import { JwtAuthService } from 'src/jwt-auth/jwt-auth.service';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/Schemas/User.schema';
 import * as mongoose from 'mongoose';
-import { log } from 'console';
 
 @Injectable()
 export class UserService {
@@ -19,13 +18,27 @@ export class UserService {
   ) {
     this.salt = parseInt(configService.get('PASSWORD_SALT'));
     //use this code to create new user
-    // const hash = hashSync('admin', this.salt);
-    // this.userModel.create({
-    //   username: 'admin',
-    //   password: hash,
+    // this.createUser({
     //   firstName: 'admin',
-    //   lastName: 'admin',
-    // }).then(console.log)
+    //   lastname: 'asd',
+    //   password: '12345678',
+    //   username: 'admin5',
+    // }).then(console.log);
+  }
+
+  async createUser(user: {
+    username: string;
+    password: string;
+    firstName: string;
+    lastname: string;
+  }) {
+    const hash = hashSync(user.password, this.salt);
+    return await this.userModel.create({
+      username: user.username,
+      password: hash,
+      firstName: user.firstName,
+      lastName: user.lastname,
+    });
   }
 
   async login(loginDto: LoginDto) {

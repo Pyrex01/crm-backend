@@ -22,7 +22,8 @@ export class JwtAuthGuard implements CanActivate {
     const userPayload = this.jwtAuthService.verifyJwt(token);
     if (userPayload) {
       headers.id = userPayload.id;
-      headers.name = userPayload.name;
+      headers.firstName = userPayload.firstName;
+      headers.lastName = userPayload.lastName;
       headers.username = userPayload.username;
 
       return true;

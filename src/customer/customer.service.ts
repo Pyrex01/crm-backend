@@ -40,7 +40,7 @@ export class CustomerService {
       const result = await this.customerModel.findById(id);
       return result;
     } catch (error) {
-      if(error.kind === 'ObjectId'){
+      if (error.kind === 'ObjectId') {
         throw new NotFoundException("Customer doesn't exist!");
       }
       throw error;
@@ -61,8 +61,16 @@ export class CustomerService {
   async updateCustomer(updateCustomerDTO: UpdateCustomerDTO) {
     const id = updateCustomerDTO.id;
     delete updateCustomerDTO.id;
-    return await this.customerModel.findByIdAndUpdate(id, updateCustomerDTO, {
-      returnDocument: 'after',
-    });
+    const result = await this.customerModel.findByIdAndUpdate(
+      id,
+      updateCustomerDTO,
+      {
+        returnDocument: 'after',
+      },
+    );
+    if (!result) {
+      throw new NotFoundException('no such user to update!');
+    }
+    return result;
   }
 }

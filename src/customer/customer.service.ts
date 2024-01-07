@@ -36,14 +36,15 @@ export class CustomerService {
   }
 
   async getCustomer(id: string) {
-    const result = await this.customerModel.findOne({
-      id: id,
-      isDeleted: false,
-    });
-    if (!result) {
-      throw new NotFoundException("Customer doesn't exist!");
+    try {
+      const result = await this.customerModel.findById(id);
+      return result;
+    } catch (error) {
+      if(error.kind === 'ObjectId'){
+        throw new NotFoundException("Customer doesn't exist!");
+      }
+      throw error;
     }
-    return result;
   }
 
   async createCustomer(createCustomerDto: CreateCustomerDTO) {
